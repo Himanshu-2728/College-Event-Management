@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect | Event Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-graduation-cap"></i> CampusConnect
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active" onclick="navigateTo('home')">Dashboard</a></li>
+            <li><a href="#" onclick="openModal('new-event-modal')">Host an Event</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        
+        <section class="hero-section">
+            <h2 class="section-title">Featured Highlights</h2>
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="carousel-track">
+                    </div>
+            </div>
+        </section>
+
+        <section class="filter-section">
+            <div class="filter-group">
+                <label><i class="fa-solid fa-building"></i> Department</label>
+                <select id="sort-department" onchange="filterEvents()">
+                    <option value="all">All Departments</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fa-solid fa-layer-group"></i> Category</label>
+                <select id="sort-category" onchange="filterEvents()">
+                    <option value="all">All Categories</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label><i class="fa-solid fa-tag"></i> Type</label>
+                <select id="sort-type" onchange="filterEvents()">
+                    <option value="all">All Types</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="events-grid" id="event-list">
+            </section>
+
+    </main>
+
+    <div id="register-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Register for Event</h3>
+                <span class="close-btn" onclick="closeModal('register-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-event-title" class="highlight-text"></p>
+                <form id="form-register" onsubmit="submitRegistration(event)">
+                    <input type="hidden" id="register-event-id">
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="reg-name" placeholder="John Doe" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>College Email</label>
+                        <input type="email" id="reg-email" placeholder="john@college.edu" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Department</label>
+                        <select id="reg-dept" required>
+                            <option value="">Select...</option>
+                            <option value="CS">Computer Science</option>
+                            <option value="ME">Mechanical Engineering</option>
+                            <option value="EE">Electrical Engineering</option>
+                            <option value="Arts">Arts & Humanities</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Confirm Registration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="new-event-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Host a New Event</h3>
+                <span class="close-btn" onclick="closeModal('new-event-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-new-event" onsubmit="submitNewEvent(event)">
+                    <div class="form-group">
+                        <label>Event Title</label>
+                        <input type="text" id="new-title" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date & Time</label>
+                            <input type="datetime-local" id="new-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="new-location" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="new-description" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select id="new-department" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="new-category" required></select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="new-type" required></select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Submit Event</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
