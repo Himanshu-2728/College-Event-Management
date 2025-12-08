@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Archives - College Event Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Archives-specific carousel styles */
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .carousel-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .carousel-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .carousel-indicators {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: var(--primary-color);
+        }
+
+        .carousel-slide {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-slide h2 {
+            font-size: 2rem;
+        }
+
+        .carousel-slide p {
+            font-size: 1rem;
+        }
+
+        .carousel-slide .event-details {
+            margin: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .carousel-slide .event-category {
+            display: inline-block;
+            background-color: #e0f2fe;
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .no-past-events {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .no-past-events i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-controls {
+                flex-wrap: wrap;
+            }
+
+            .carousel-slide h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-history"></i> CampusConnect Archives
+        </div>
+        <ul class="nav-links">
+            <li><a href="reference.html">Dashboard</a></li>
+            <li><a href="archives.html" class="active">Archives</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Carousel Section -->
+        <section class="hero-section">
+            <h2 class="section-title">Featured Past Events</h2>
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="carousel-track-archives">
+                    <!-- Carousel slides will be inserted here by JavaScript -->
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-btn" onclick="previousSlide()">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button class="carousel-btn" onclick="nextSlide()">
+                    Next <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="carousel-indicators" id="carousel-indicators">
+                <!-- Indicator dots will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- All Past Events Section -->
+        <section>
+            <h2 class="section-title">Event History</h2>
+            <div class="events-grid" id="archives-grid">
+                <!-- Archive cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Get past events (events with dates in the past)
+        const allEvents = [
+            { id: 1, title: "AI/ML Workshop", date: "2025-12-10T14:00", location: "CS Lab 301", description: "Hands-on session on neural networks and deep learning basics.", department: "CS", category: "Technical", type: "Workshop" },
+            { id: 2, title: "CULTURA 2026", date: "2026-01-20T10:00", location: "Grand Auditorium", description: "The biggest cultural fest of the year. Music, Dance, and Drama.", department: "Arts", category: "Cultural", type: "Fair" },
+            { id: 3, title: "Robotics Seminar", date: "2025-12-15T11:30", location: "EE Seminar Hall", description: "Guest lecture by Industry Experts on Automation.", department: "EE", category: "Technical", type: "Talk" },
+            { id: 4, title: "Football Cup", date: "2026-02-05T09:00", location: "College Ground", description: "Inter-departmental football tournament finals.", department: "ME", category: "Sports", type: "Competition" },
+            { id: 5, title: "Mega Job Fair", date: "2026-03-01T10:00", location: "Central Plaza", description: "Connect with top recruiters from MNCs.", department: "Arts", category: "Academic", type: "Fair" },
+            { id: 6, title: "Hackathon v2.0", date: "2025-11-25T08:00", location: "Innovation Hub", description: "24-hour coding marathon to solve real-world problems.", department: "CS", category: "Technical", type: "Competition" },
+            // Additional past events
+            { id: 7, title: "Annual Sports Day", date: "2024-10-15T08:00", location: "College Ground", description: "A day filled with athletic competitions, team sports, and exciting performances.", department: "ME", category: "Sports", type: "Competition" },
+            { id: 8, title: "Tech Summit 2024", date: "2024-09-20T09:00", location: "Main Auditorium", description: "Industry leaders share insights on latest technology trends and innovations.", department: "CS", category: "Technical", type: "Talk" },
+            { id: 9, title: "Freshers' Gala 2024", date: "2024-08-10T18:00", location: "Grand Hall", description: "Welcome celebration for new students with cultural performances and fun activities.", department: "Arts", category: "Cultural", type: "Fair" },
+            { id: 10, title: "Research Symposium", date: "2024-07-25T10:00", location: "Conference Hall", description: "Students and faculty presented cutting-edge research projects across multiple domains.", department: "EE", category: "Academic", type: "Talk" }
+        ];
+
+        let currentSlide = 0;
+        let pastEvents = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            filterPastEvents();
+            renderCarousel();
+            renderArchives();
+        });
+
+        // Filter events that have already occurred
+        function filterPastEvents() {
+            const currentDate = new Date();
+            pastEvents = allEvents.filter(event => new Date(event.date) < currentDate);
+            // Sort by date in descending order (most recent first)
+            pastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        // Render carousel slides
+        function renderCarousel() {
+            const track = document.getElementById('carousel-track-archives');
+            const indicators = document.getElementById('carousel-indicators');
+
+            if (pastEvents.length === 0) {
+                track.innerHTML = '<div class="carousel-slide"><p style="color: var(--text-muted);">No past events yet. Check back soon!</p></div>';
+                indicators.innerHTML = '';
+                return;
+            }
+
+            track.innerHTML = pastEvents.map(event => {
+                const dateObj = new Date(event.date);
+                const dateStr = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <div class="carousel-slide">
+                        <span class="event-category">${event.category}</span>
+                        <h2>${event.title}</h2>
+                        <div class="event-details">
+                            <span><i class="fa-solid fa-calendar"></i> ${dateStr}</span>
+                            <span><i class="fa-solid fa-clock"></i> ${timeStr}</span>
+                            <span><i class="fa-solid fa-location-dot"></i> ${event.location}</span>
+                        </div>
+                        <p>${event.description}</p>
+                        <small style="color: var(--text-muted);">Department: ${event.department} • Type: ${event.type}</small>
+                    </div>
+                `;
+            }).join('');
+
+            // Create indicator dots
+            indicators.innerHTML = pastEvents.map((_, index) => 
+                `<span class="dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></span>`
+            ).join('');
+        }
+
+        // Carousel navigation
+        function nextSlide() {
+            if (pastEvents.length === 0) return;
+            currentSlide = (currentSlide + 1) % pastEvents.length;
+            updateCarousel();
+        }
+
+        function previousSlide() {
+            if (pastEvents.length === 0) return;
+            currentSlide = (currentSlide - 1 + pastEvents.length) % pastEvents.length;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('carousel-track-archives');
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            // Update indicator dots
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Render all past events in grid
+        function renderArchives() {
+            const grid = document.getElementById('archives-grid');
+
+            if (pastEvents.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-past-events">
+                        <i class="fa-solid fa-inbox"></i>
+                        <h3>No Past Events Yet</h3>
+                        <p>As we create more memories, they will appear here!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = pastEvents.map(event => {
+                const dateObj = new Date(event.date);
+                const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <article class="event-card" data-dept="${event.department}" data-cat="${event.category}" data-type="${event.type}">
+                        <div class="card-header">
+                            <span class="card-badge">${event.category}</span>
+                            <small style="color:var(--text-muted)">${event.type}</small>
+                        </div>
+                        <h3>${event.title}</h3>
+                        <div class="event-meta">
+                            <span><i class="fa-regular fa-calendar"></i> ${dateStr}, ${timeStr}</span>
+                            <span><i class="fa-solid fa-location-dot"></i> ${event.location}</span>
+                        </div>
+                        <p class="event-desc">${event.description}</p>
+                        <small style="color: var(--text-muted);">Department: <strong>${event.department}</strong></small>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // Auto-advance carousel every 5 seconds
+        setInterval(nextSlide, 5000);
+    </script>
+</body>
+</html>
