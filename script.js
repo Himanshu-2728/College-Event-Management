@@ -1,6 +1,3 @@
-// script.js
-
-// CONFIGURATION: Updated to match your HTML options
 const config = {
     departments: [
         "CS", "ME", "ECE", "ENE", "ETC", "CT", "IT", 
@@ -12,9 +9,12 @@ const config = {
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // We do NOT declare 'events' here because it comes from data.js
-    // If data.js is loaded first in HTML, 'events' is available globally.
-    
+    // Check if data.js is loaded
+    if (typeof events === 'undefined') {
+        console.error("Error: data.js is not loaded. Make sure the file exists!");
+        return;
+    }
+
     populateDropdowns();
     renderEvents();
     renderCarousel();
@@ -28,29 +28,25 @@ function populateDropdowns() {
     const fill = (id, data) => {
         const els = document.querySelectorAll(`#${id}`);
         els.forEach(select => {
-            // Check if it's the filter dropdown (sort-) or form dropdown (new-)
-            // We only want to auto-fill the 'new-' ones, as 'sort-' is usually static or handled differently.
-            // However, based on your code, we can append options.
-            if(select.innerHTML.includes('option value=""')) return; // Prevent duplicates if ran twice
-            
+            // FIX: We removed the check that was stopping the code.
+            // Now we simply append the options to whatever is already there.
             data.forEach(item => {
-                select.innerHTML += `<option value="${item}">${item}</option>`;
+                // Prevent adding duplicates if they already exist
+                if (!select.innerHTML.includes(`value="${item}"`)) {
+                    select.innerHTML += `<option value="${item}">${item}</option>`;
+                }
             });
         });
     };
 
-    // Fill Form Dropdowns
-    const fillSelect = (id, list) => {
-        const select = document.getElementById(id);
-        if(!select) return;
-        list.forEach(item => {
-            select.innerHTML += `<option value="${item}">${item}</option>`;
-        });
-    }
-
-    fillSelect('new-department', config.departments);
-    fillSelect('new-category', config.categories);
-    fillSelect('new-type', config.types);
+    fill('new-department', config.departments);
+    fill('new-category', config.categories);
+    fill('new-type', config.types);
+    
+    // Also fill the Sort filters if they exist
+    fill('sort-department', config.departments);
+    fill('sort-category', config.categories);
+    fill('sort-type', config.types);
 }
 
 function createEventCard(event) {
@@ -58,7 +54,6 @@ function createEventCard(event) {
     const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-    // Link to the generalized details page
     return `
         <article class="event-card" onclick="window.location.href='event-details.html?id=${event.id}'" style="cursor: pointer;">
             <div class="card-header">
@@ -72,8 +67,8 @@ function createEventCard(event) {
             </div>
             <p class="event-desc">${event.description.substring(0, 80)}...</p>
             
-            <button class="btn btn-primary full-width" onclick="event.stopPropagation(); openRegisterModal(${event.id})">
-                Register Now
+            <button class="btn btn-primary full-width" onclick="event.stopPropagation(); window.location.href='event-details.html?id=${event.id}'">
+                Learn More <i class="fa-solid fa-arrow-right"></i>
             </button>
         </article>
     `;
@@ -95,16 +90,17 @@ function filterEvents() {
     const cards = document.querySelectorAll('.event-card');
 
     cards.forEach(card => {
-        const cardDept = card.getAttribute('data-dept'); // Note: ensure createEventCard adds these data attributes if you want filtering to work perfectly.
-        // Simplified filter for now based on your HTML structure:
-        // You need to add data attributes to the card HTML in createEventCard to make this work efficiently.
-        // For now, let's just show all to ensure they appear.
-        card.style.display = 'block'; 
+        // We find the event object corresponding to this card's title
+        const cardTitle = card.querySelector('h3').innerText;
+        const event = events.find(e => e.title === cardTitle);
+        
+        if (event) {
+             const mDept = dept === 'all' || event.department === dept;
+             const mCat = cat === 'all' || event.category === cat;
+             const mType = type === 'all' || event.type === type;
+             card.style.display = (mDept && mCat && mType) ? 'block' : 'none';
+        }
     });
-    
-    // Proper implementation requires data-attributes in HTML generation:
-    // I will update createEventCard above to include them for next time, 
-    // but for now let's get them showing up.
 }
 
 // --- Carousel Logic ---
@@ -115,13 +111,16 @@ function renderCarousel() {
     const track = document.getElementById('carousel-track');
     if (!track) return;
     
-    const highlights = events.slice(0, 3); // Take top 3
+    // Safety check if events are empty
+    if(events.length === 0) return;
+
+    const highlights = events.slice(0, 3); 
 
     track.innerHTML = highlights.map(event => `
         <div class="carousel-slide" style="background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('${event.image}'); background-size: cover;">
             <h2>${event.title}</h2>
             <p>${new Date(event.date).toDateString()} @ ${event.location}</p>
-            <button class="btn btn-primary" onclick="openRegisterModal(${event.id})">View Details & Register</button>
+            <button class="btn btn-primary" onclick="window.location.href='event-details.html?id=${event.id}'">View Details</button>
         </div>
     `).join('');
 }
@@ -136,8 +135,7 @@ function startCarousel() {
     }, SLIDE_INTERVAL);
 }
 
-// --- Modal & Form Logic ---
-
+// --- Modal Logic (For New Event) ---
 function openModal(modalId) {
     document.getElementById(modalId).style.display = 'flex';
 }
@@ -152,23 +150,6 @@ window.onclick = function(event) {
     }
 }
 
-function openRegisterModal(eventId) {
-    const event = events.find(e => e.id === eventId);
-    if(event) {
-        document.getElementById('register-event-id').value = eventId;
-        document.getElementById('modal-event-title').innerText = `You are registering for: ${event.title}`;
-        openModal('register-modal');
-    }
-}
-
-function submitRegistration(e) {
-    e.preventDefault();
-    const name = document.getElementById('reg-name').value;
-    alert(`Success! ${name} has been registered.`);
-    closeModal('register-modal');
-    e.target.reset();
-}
-
 function submitNewEvent(e) {
     e.preventDefault();
     
@@ -181,7 +162,7 @@ function submitNewEvent(e) {
         department: document.getElementById('new-department').value,
         category: document.getElementById('new-category').value,
         type: document.getElementById('new-type').value,
-        image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80" // Default image
+        image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80"
     };
 
     events.push(newEvent);
