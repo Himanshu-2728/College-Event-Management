@@ -1,21 +1,20 @@
-// --- Data Source ---
-let events = [
-    { id: 1, title: "AI/ML Workshop", date: "2025-12-10T14:00", location: "CS Lab 301", description: "Hands-on session on neural networks and deep learning basics.", department: "CS", category: "Technical", type: "Workshop" },
-    { id: 2, title: "CULTURA 2026", date: "2026-01-20T10:00", location: "Grand Auditorium", description: "The biggest cultural fest of the year. Music, Dance, and Drama.", department: "Arts", category: "Cultural", type: "Fair" },
-    { id: 3, title: "Robotics Seminar", date: "2025-12-15T11:30", location: "EE Seminar Hall", description: "Guest lecture by Industry Experts on Automation.", department: "EE", category: "Technical", type: "Talk" },
-    { id: 4, title: "Football Cup", date: "2026-02-05T09:00", location: "College Ground", description: "Inter-departmental football tournament finals.", department: "ME", category: "Sports", type: "Competition" },
-    { id: 5, title: "Mega Job Fair", date: "2026-03-01T10:00", location: "Central Plaza", description: "Connect with top recruiters from MNCs.", department: "Arts", category: "Academic", type: "Fair" },
-    { id: 6, title: "Hackathon v2.0", date: "2025-11-25T08:00", location: "Innovation Hub", description: "24-hour coding marathon to solve real-world problems.", department: "CS", category: "Technical", type: "Competition" }
-];
-
 const config = {
-    departments: ["CS", "ME", "EE", "Arts"],
-    categories: ["Technical", "Cultural", "Sports", "Academic"],
+    departments: [
+        "CS", "ME", "ECE", "ENE", "ETC", "CT", "IT", 
+        "AIDS", "AIML", "CSD", "IoT", "VLSI"
+    ],
+    categories: ["Technical", "Cultural", "Sports", "Academic" , "Art"],
     types: ["Workshop", "Competition", "Talk", "Fair"]
 };
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if data.js is loaded
+    if (typeof events === 'undefined') {
+        console.error("Error: data.js is not loaded. Make sure the file exists!");
+        return;
+    }
+
     populateDropdowns();
     renderEvents();
     renderCarousel();
@@ -27,31 +26,27 @@ document.addEventListener('DOMContentLoaded', () => {
 function populateDropdowns() {
     // Helper to fill select elements
     const fill = (id, data) => {
-        const els = document.querySelectorAll(`#${id}`); // Use querySelectorAll to target filter & form dropdowns
+        const els = document.querySelectorAll(`#${id}`);
         els.forEach(select => {
-            // Keep default option for filters, remove for forms if needed
-            if(id.startsWith('new-') || id.startsWith('reg-')) select.innerHTML = `<option value="">Select...</option>`; 
-            
+            // FIX: We removed the check that was stopping the code.
+            // Now we simply append the options to whatever is already there.
             data.forEach(item => {
-                select.innerHTML += `<option value="${item}">${item}</option>`;
+                // Prevent adding duplicates if they already exist
+                if (!select.innerHTML.includes(`value="${item}"`)) {
+                    select.innerHTML += `<option value="${item}">${item}</option>`;
+                }
             });
         });
     };
 
-    // Fill Filter Dropdowns
-    const fillFilter = (id, data) => {
-        const el = document.getElementById(id);
-        data.forEach(item => el.innerHTML += `<option value="${item}">${item}</option>`);
-    };
-
-    fillFilter('sort-department', config.departments);
-    fillFilter('sort-category', config.categories);
-    fillFilter('sort-type', config.types);
-
-    // Fill Form Dropdowns
     fill('new-department', config.departments);
     fill('new-category', config.categories);
     fill('new-type', config.types);
+    
+    // Also fill the Sort filters if they exist
+    fill('sort-department', config.departments);
+    fill('sort-category', config.categories);
+    fill('sort-type', config.types);
 }
 
 function createEventCard(event) {
@@ -60,7 +55,7 @@ function createEventCard(event) {
     const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
     return `
-        <article class="event-card" data-dept="${event.department}" data-cat="${event.category}" data-type="${event.type}">
+        <article class="event-card" onclick="window.location.href='event-details.html?id=${event.id}'" style="cursor: pointer;">
             <div class="card-header">
                 <span class="card-badge">${event.category}</span>
                 <small style="color:var(--text-muted)">${event.type}</small>
@@ -70,9 +65,10 @@ function createEventCard(event) {
                 <span><i class="fa-regular fa-calendar"></i> ${dateStr}, ${timeStr}</span>
                 <span><i class="fa-solid fa-location-dot"></i> ${event.location}</span>
             </div>
-            <p class="event-desc">${event.description}</p>
-            <button class="btn btn-primary full-width" onclick="openRegisterModal(${event.id})">
-                Register Now
+            <p class="event-desc">${event.description.substring(0, 80)}...</p>
+            
+            <button class="btn btn-primary full-width" onclick="event.stopPropagation(); window.location.href='event-details.html?id=${event.id}'">
+                Learn More <i class="fa-solid fa-arrow-right"></i>
             </button>
         </article>
     `;
@@ -80,6 +76,7 @@ function createEventCard(event) {
 
 function renderEvents() {
     const grid = document.getElementById('event-list');
+    if (!grid) return;
     grid.innerHTML = events.map(event => createEventCard(event)).join('');
 }
 
@@ -93,11 +90,16 @@ function filterEvents() {
     const cards = document.querySelectorAll('.event-card');
 
     cards.forEach(card => {
-        const mDept = dept === 'all' || card.dataset.dept === dept;
-        const mCat = cat === 'all' || card.dataset.cat === cat;
-        const mType = type === 'all' || card.dataset.type === type;
-
-        card.style.display = (mDept && mCat && mType) ? 'block' : 'none';
+        // We find the event object corresponding to this card's title
+        const cardTitle = card.querySelector('h3').innerText;
+        const event = events.find(e => e.title === cardTitle);
+        
+        if (event) {
+             const mDept = dept === 'all' || event.department === dept;
+             const mCat = cat === 'all' || event.category === cat;
+             const mType = type === 'all' || event.type === type;
+             card.style.display = (mDept && mCat && mType) ? 'block' : 'none';
+        }
     });
 }
 
@@ -107,28 +109,33 @@ const SLIDE_INTERVAL = 4000;
 
 function renderCarousel() {
     const track = document.getElementById('carousel-track');
-    const highlights = events.slice(0, 3); // Take top 3
+    if (!track) return;
+    
+    // Safety check if events are empty
+    if(events.length === 0) return;
+
+    const highlights = events.slice(0, 3); 
 
     track.innerHTML = highlights.map(event => `
-        <div class="carousel-slide">
+        <div class="carousel-slide" style="background-image: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('${event.image}'); background-size: cover;">
             <h2>${event.title}</h2>
             <p>${new Date(event.date).toDateString()} @ ${event.location}</p>
-            <button class="btn btn-primary" onclick="openRegisterModal(${event.id})">View Details & Register</button>
+            <button class="btn btn-primary" onclick="window.location.href='event-details.html?id=${event.id}'">View Details</button>
         </div>
     `).join('');
 }
 
 function startCarousel() {
     const track = document.getElementById('carousel-track');
-    // Simple auto-scroll
+    if (!track) return;
+    
     setInterval(() => {
-        slideIndex = (slideIndex + 1) % 3; // Assuming 3 slides
+        slideIndex = (slideIndex + 1) % 3; 
         track.style.transform = `translateX(-${slideIndex * 100}%)`;
     }, SLIDE_INTERVAL);
 }
 
-// --- Modal & Form Logic ---
-
+// --- Modal Logic (For New Event) ---
 function openModal(modalId) {
     document.getElementById(modalId).style.display = 'flex';
 }
@@ -137,28 +144,10 @@ function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
-// Close modal if clicking outside content
 window.onclick = function(event) {
     if (event.target.classList.contains('modal-overlay')) {
         event.target.style.display = 'none';
     }
-}
-
-function openRegisterModal(eventId) {
-    const event = events.find(e => e.id === eventId);
-    if(event) {
-        document.getElementById('register-event-id').value = eventId;
-        document.getElementById('modal-event-title').innerText = `You are registering for: ${event.title}`;
-        openModal('register-modal');
-    }
-}
-
-function submitRegistration(e) {
-    e.preventDefault();
-    const name = document.getElementById('reg-name').value;
-    alert(`Success! ${name} has been registered.`);
-    closeModal('register-modal');
-    e.target.reset();
 }
 
 function submitNewEvent(e) {
@@ -172,12 +161,13 @@ function submitNewEvent(e) {
         description: document.getElementById('new-description').value,
         department: document.getElementById('new-department').value,
         category: document.getElementById('new-category').value,
-        type: document.getElementById('new-type').value
+        type: document.getElementById('new-type').value,
+        image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1000&q=80"
     };
 
     events.push(newEvent);
-    renderEvents(); // Update grid
-    renderCarousel(); // Update slider (if logic includes new events)
+    renderEvents(); 
+    renderCarousel();
     
     alert('Event Submitted Successfully!');
     closeModal('new-event-modal');

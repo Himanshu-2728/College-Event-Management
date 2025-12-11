@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details | CampusConnect</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .details-header {
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            border-radius: 0 0 20px 20px;
+        }
+        .details-overlay {
+            background: rgba(0,0,0,0.6);
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+            color: white;
+            border-radius: 0 0 20px 20px;
+        }
+        .details-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand" onclick="window.location.href='reference.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </div>
+    </nav>
+
+    <header class="details-header" id="header-bg">
+        <div class="details-overlay">
+            <div>
+                <span class="status-badge" id="detail-category">Category</span>
+                <h1 id="detail-title" style="font-size: 2.5rem; margin-top: 10px;">Loading Event...</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="details-content">
+            
+            <div class="main-info">
+                <div class="info-card">
+                    <h3>About the Event</h3>
+                    <p id="detail-desc" style="line-height: 1.8; color: #444;">
+                        Loading description...
+                    </p>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <div class="info-card">
+                    <h3>Event Details</h3>
+                    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+                        <li style="margin-bottom: 1rem;">
+                            <i class="fa-regular fa-calendar" style="color: var(--primary-color); width: 20px;"></i>
+                            <strong id="detail-date">Date</strong>
+                        </li>
+                        <li style="margin-bottom: 1rem;">
+                            <i class="fa-regular fa-clock" style="color: var(--primary-color); width: 20px;"></i>
+                            <strong id="detail-time">Time</strong>
+                        </li>
+                        <li style="margin-bottom: 1rem;">
+                            <i class="fa-solid fa-location-dot" style="color: var(--primary-color); width: 20px;"></i>
+                            <span id="detail-location">Location</span>
+                        </li>
+                        <li style="margin-bottom: 1rem;">
+                            <i class="fa-solid fa-users" style="color: var(--primary-color); width: 20px;"></i>
+                            <span id="detail-spots">Availability</span>
+                        </li>
+                    </ul>
+
+                    <button class="btn btn-primary full-width" onclick="openRegisterModal()">
+                        Register Now
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div id="register-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Register for Event</h3>
+                <span class="close-btn" onclick="closeModal('register-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-event-title" class="highlight-text"></p>
+                <form id="form-register" onsubmit="submitRegistration(event)">
+                    <input type="hidden" id="register-event-id">
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="reg-name" placeholder="eg. Rakesh Sharma" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>College Email</label>
+                        <input type="email" id="reg-email" placeholder="eg. name@college.edu" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="reg-phone" placeholder="eg. +91 1234567890" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>College</label>
+                        <select id="reg-college" required>
+                            <option value="">Select</option>
+                            <option value="IITW">Yeshwantrao Chavhan College of Engineering</option>
+                            <option value="VNIT">Visheshwaraya Institute of Technology</option>
+                            <option value="RBU">Ramdeobaba College of Engineering & Management</option>
+                            <option value="IITH">Raisoni Group of Institutions(Engineering)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Department</label>
+                        <select id="reg-dept" required>
+                            <option value="">Select</option>
+                            <option value="CS">Computer Science and Engineering</option>
+                            <option value="ME">Mechanical Engineering</option>
+                            <option value="ECE">Electrical Engineering</option>
+                            <option value="ENE">Electronics Engineering</option>
+                            <option value="ETC">Electronics and Telecommunications Engineering</option>
+                            <option value="CT">Computer Technology</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="AIDS">Artificial Intelligence & Data Science</option>
+                            <option value="AIML">Artificial Intelligence & Machine Learning</option>
+                            <option value="CSD">Computer Science & Design</option>
+                            <option value="IoT">Computer Science and Engineering (IoT)</option>
+                            <option value="VLSI">VLSI Design</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Confirm Registration</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+
+    <script>
+        let currentEvent = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if events exists
+            if (typeof events === 'undefined') {
+                document.body.innerHTML = "<h1 style='text-align:center;color:red;'>Error: data.js not found</h1>";
+                return;
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('id');
+
+            currentEvent = events.find(e => e.id == eventId);
+
+            if (currentEvent) {
+                document.title = `${currentEvent.title} | Details`;
+                document.getElementById('header-bg').style.backgroundImage = `url('${currentEvent.image}')`;
+                document.getElementById('detail-title').innerText = currentEvent.title;
+                document.getElementById('detail-category').innerText = currentEvent.category;
+                document.getElementById('detail-desc').innerText = currentEvent.description;
+                document.getElementById('detail-location').innerText = currentEvent.location;
+                document.getElementById('detail-spots').innerText = `${currentEvent.spots} Spots Available`;
+
+                const dateObj = new Date(currentEvent.date);
+                document.getElementById('detail-date').innerText = dateObj.toLocaleDateString();
+                document.getElementById('detail-time').innerText = dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else {
+                document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px;'>Event not found (Check URL ID)</h1>";
+            }
+        });
+
+        function openRegisterModal() {
+            if(!currentEvent) return;
+            document.getElementById('register-event-id').value = currentEvent.id;
+            document.getElementById('modal-event-title').innerText = `Registering for: ${currentEvent.title}`;
+            document.getElementById('register-modal').style.display = 'flex';
+        }
+
+        function closeModal(modalId = 'register-modal') {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function submitRegistration(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            alert(`🎉 Success! ${name} is registered for ${currentEvent.title}.`);
+            closeModal();
+            e.target.reset();
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('register-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
