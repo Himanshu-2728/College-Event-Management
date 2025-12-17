@@ -69,7 +69,7 @@
         <small>&copy; 2025 College Event Management</small>
     </footer>
 
-    <script src="data.js"></script>
+    <script src="data-archives.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -85,7 +85,6 @@
 
             if (currentEvent) {
                 document.title = `${currentEvent.title} | Details`;
-                // if image is a relative path it will work; if remote URL, it's okay
                 if (currentEvent.image) document.getElementById('header-bg').style.backgroundImage = `url('${currentEvent.image}')`;
                 document.getElementById('detail-title').innerText = currentEvent.title;
                 document.getElementById('detail-category').innerText = currentEvent.category || currentEvent.type || 'Event';

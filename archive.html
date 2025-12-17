@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Small archives-specific styles */
         .no-past-events {
             text-align: center;
             padding: 3rem 1rem;
@@ -21,12 +20,10 @@
             opacity: 0.5;
         }
 
-        /* Make archive cards clickable */
         .event-link { text-decoration: none; color: inherit; display: block; }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-brand">
             <i class="fa-solid fa-history"></i> CampusConnect Archives
@@ -37,55 +34,35 @@
         </ul>
     </nav>
 
-    <!-- Main Container -->
     <main class="container">
-        <!-- Carousel Section -->
-        <!-- (Carousel removed) Featured Past Events intentionally hidden to keep archives focused -->
 
-        <!-- All Past Events Section -->
         <section>
             <h2 class="section-title">Event History</h2>
             <div class="events-grid" id="archives-grid">
-                <!-- Archive cards will be inserted here by JavaScript -->
             </div>
         </section>
     </main>
-
     <script>
-        // Get past events (events with dates in the past)
         const allEvents = [
             { id: 10, title: "ISTE Student Chapter", date: "2025-11-19T14:00", location: "CCC Auditorium", description: "This follows their B.Tech first-year chapter's inauguration in early March 2025.", department: "CS", category: "Technical", type: "Workshop" },
             { id: 11, title: "IC Regional Meet", date: "2025-11-28T10:00", location: "SDM Auditorium", description: "The event was organized by the Ministry of Education's (MoE) Innovation Cell and the All India Council for Technical Education (AICTE).", department: "Arts", category: "Cultural", type: "Fair" },
-            { id: 12, title: "Jashn-e-Diwali", date: "2025-9-15T11:30", location: "Turf", description: "Diwali Celebration Events for YCCE students", department: "EE", category: "Technical", type: "Talk" },
-            { id: 4, title: "Football Cup", date: "2026-02-05T09:00", location: "College Ground", description: "Inter-departmental football tournament finals.", department: "ME", category: "Sports", type: "Competition" },
-            { id: 5, title: "Mega Job Fair", date: "2026-03-01T10:00", location: "Central Plaza", description: "Connect with top recruiters from MNCs.", department: "Arts", category: "Academic", type: "Fair" },
-            { id: 6, title: "Hackathon v2.0", date: "2025-11-25T08:00", location: "Innovation Hub", description: "24-hour coding marathon to solve real-world problems.", department: "CS", category: "Technical", type: "Competition" },
-            // Additional past events
-            { id: 7, title: "Annual Sports Day", date: "2024-10-15T08:00", location: "College Ground", description: "A day filled with athletic competitions, team sports, and exciting performances.", department: "ME", category: "Sports", type: "Competition" },
-            { id: 8, title: "Tech Summit 2024", date: "2024-09-20T09:00", location: "Main Auditorium", description: "Industry leaders share insights on latest technology trends and innovations.", department: "CS", category: "Technical", type: "Talk" },
-            { id: 9, title: "Freshers' Gala 2024", date: "2024-08-10T18:00", location: "Grand Hall", description: "Welcome celebration for new students with cultural performances and fun activities.", department: "Arts", category: "Cultural", type: "Fair" },
-            { id: 10, title: "Research Symposium", date: "2024-07-25T10:00", location: "Conference Hall", description: "Students and faculty presented cutting-edge research projects across multiple domains.", department: "EE", category: "Academic", type: "Talk" }
+            { id: 12, title: "Jashn-e-Diwali", date: "2025-09-15T11:30", location: "Turf", description: "Diwali Celebration Events for YCCE students", department: "EE", category: "Technical", type: "Talk" },
+            { id: 13, title: "Rotaract Fellowship Programm", date: "2024-10-15T08:00", location: "Front of Admin Complex", description: "Rotary International's prestigious Rotary Peace Fellowship, a fully-funded program for leaders in peace and development", department: "ME", category: "Cultural", type: "Talk" },
         ];
 
         let pastEvents = [];
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             filterPastEvents();
             renderArchives();
         });
 
-        // Filter events that have already occurred
         function filterPastEvents() {
             const currentDate = new Date();
             pastEvents = allEvents.filter(event => new Date(event.date) < currentDate);
-            // Sort by date in descending order (most recent first)
             pastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
         }
 
-        // (Carousel removed) keep archive grid rendering only
-
-        // Render all past events in grid
         function renderArchives() {
             const grid = document.getElementById('archives-grid');
 
@@ -124,7 +101,6 @@
                 `;
             }).join('');
         }
-        // end of script
     </script>
 </body>
 </html>
