@@ -14,15 +14,16 @@
             <i class="fa-solid fa-graduation-cap"></i> CampusConnect
         </div>
         <ul class="nav-links">
-            <li><a href="#" class="active" onclick="navigateTo('home')">Dashboard</a></li>
-            <li><a href="#" onclick="openModal('new-event-modal')">Host an Event</a></li>
+            <li><a href="reference.html" class="active">Dashboard</a></li>
+            <li><a href="#" onclick="openModal('new-event-modal')">Host</a></li>
+            <li><a href="archive.html">Archive</a></li>
         </ul>
     </nav>
 
     <main class="container">
         
         <section class="hero-section">
-            <h2 class="section-title">Featured Highlights</h2>
+            <h2 class="section-title">Upcoming Events</h2>
             <div class="carousel-wrapper">
                 <div class="carousel-track" id="carousel-track">
                     </div>
@@ -54,44 +55,6 @@
             </section>
 
     </main>
-
-    <div id="register-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Register for Event</h3>
-                <span class="close-btn" onclick="closeModal('register-modal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <p id="modal-event-title" class="highlight-text"></p>
-                <form id="form-register" onsubmit="submitRegistration(event)">
-                    <input type="hidden" id="register-event-id">
-                    
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="reg-name" placeholder="John Doe" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>College Email</label>
-                        <input type="email" id="reg-email" placeholder="john@college.edu" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Department</label>
-                        <select id="reg-dept" required>
-                            <option value="">Select...</option>
-                            <option value="CS">Computer Science</option>
-                            <option value="ME">Mechanical Engineering</option>
-                            <option value="EE">Electrical Engineering</option>
-                            <option value="Arts">Arts & Humanities</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary full-width">Confirm Registration</button>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <div id="new-event-modal" class="modal-overlay">
         <div class="modal-content">
@@ -143,7 +106,8 @@
             </div>
         </div>
     </div>
-
+    
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Archives - College Event Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .no-past-events {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .no-past-events i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .event-link { text-decoration: none; color: inherit; display: block; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-history"></i> CampusConnect Archives
+        </div>
+        <ul class="nav-links">
+            <li><a href="reference.html">Dashboard</a></li>
+            <li><a href="archives.html" class="active">Archives</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <section>
+            <h2 class="section-title">Event History</h2>
+            <div class="events-grid" id="archives-grid">
+            </div>
+        </section>
+    </main>
+    <script>
+        const allEvents = [
+            { id: 10, title: "ISTE Student Chapter", date: "2025-11-19T14:00", location: "CCC Auditorium", description: "This follows their B.Tech first-year chapter's inauguration in early March 2025.", department: "CS", category: "Technical", type: "Workshop" },
+            { id: 11, title: "IC Regional Meet", date: "2025-11-28T10:00", location: "SDM Auditorium", description: "The event was organized by the Ministry of Education's (MoE) Innovation Cell and the All India Council for Technical Education (AICTE).", department: "Arts", category: "Cultural", type: "Fair" },
+            { id: 12, title: "Jashn-e-Diwali", date: "2025-09-15T11:30", location: "Turf", description: "Diwali Celebration Events for YCCE students", department: "EE", category: "Technical", type: "Talk" },
+            { id: 13, title: "Rotaract Fellowship Programm", date: "2024-10-15T08:00", location: "Front of Admin Complex", description: "Rotary International's prestigious Rotary Peace Fellowship, a fully-funded program for leaders in peace and development", department: "ME", category: "Cultural", type: "Talk" },
+        ];
+
+        let pastEvents = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            filterPastEvents();
+            renderArchives();
+        });
+
+        function filterPastEvents() {
+            const currentDate = new Date();
+            pastEvents = allEvents.filter(event => new Date(event.date) < currentDate);
+            pastEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        function renderArchives() {
+            const grid = document.getElementById('archives-grid');
+
+            if (pastEvents.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-past-events">
+                        <i class="fa-solid fa-inbox"></i>
+                        <h3>No Past Events Yet</h3>
+                        <p>As we create more memories, they will appear here!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = pastEvents.map(event => {
+                const dateObj = new Date(event.date);
+                const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <a class="event-link" href="past-event-details.html?id=${event.id}">
+                        <article class="event-card" data-dept="${event.department}" data-cat="${event.category}" data-type="${event.type}">
+                            <div class="card-header">
+                                <span class="card-badge">${event.category}</span>
+                                <small style="color:var(--text-muted)">${event.type}</small>
+                            </div>
+                            <h3>${event.title}</h3>
+                            <div class="event-meta">
+                                <span><i class="fa-regular fa-calendar"></i> ${dateStr}, ${timeStr}</span>
+                                <span><i class="fa-solid fa-location-dot"></i> ${event.location}</span>
+                            </div>
+                            <p class="event-desc">${event.description}</p>
+                            <small style="color: var(--text-muted);">Department: <strong>${event.department}</strong></small>
+                        </article>
+                    </a>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
