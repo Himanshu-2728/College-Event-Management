@@ -7,9 +7,7 @@ const config = {
     types: ["Workshop", "Competition", "Talk", "Fair"]
 };
 
-// --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if data.js is loaded
     if (typeof events === 'undefined') {
         console.error("Error: data.js is not loaded. Make sure the file exists!");
         return;
@@ -21,17 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     startCarousel();
 });
 
-// --- Rendering Functions ---
 
 function populateDropdowns() {
-    // Helper to fill select elements
     const fill = (id, data) => {
         const els = document.querySelectorAll(`#${id}`);
         els.forEach(select => {
-            // FIX: We removed the check that was stopping the code.
-            // Now we simply append the options to whatever is already there.
             data.forEach(item => {
-                // Prevent adding duplicates if they already exist
                 if (!select.innerHTML.includes(`value="${item}"`)) {
                     select.innerHTML += `<option value="${item}">${item}</option>`;
                 }
@@ -43,7 +36,6 @@ function populateDropdowns() {
     fill('new-category', config.categories);
     fill('new-type', config.types);
     
-    // Also fill the Sort filters if they exist
     fill('sort-department', config.departments);
     fill('sort-category', config.categories);
     fill('sort-type', config.types);
@@ -67,7 +59,7 @@ function createEventCard(event) {
             </div>
             <p class="event-desc">${event.description.substring(0, 80)}...</p>
             
-            <button class="btn btn-primary full-width" onclick="event.stopPropagation(); window.location.href='event-details.html?id=${event.id}'">
+            <button class="btn btn-primary full-width" onclick=" window.location.href='event-details.html?id=${event.id}'">
                 Learn More <i class="fa-solid fa-arrow-right"></i>
             </button>
         </article>
@@ -80,7 +72,6 @@ function renderEvents() {
     grid.innerHTML = events.map(event => createEventCard(event)).join('');
 }
 
-// --- Filter Logic ---
 
 function filterEvents() {
     const dept = document.getElementById('sort-department').value;
@@ -90,7 +81,6 @@ function filterEvents() {
     const cards = document.querySelectorAll('.event-card');
 
     cards.forEach(card => {
-        // We find the event object corresponding to this card's title
         const cardTitle = card.querySelector('h3').innerText;
         const event = events.find(e => e.title === cardTitle);
         
@@ -103,7 +93,6 @@ function filterEvents() {
     });
 }
 
-// --- Carousel Logic ---
 let slideIndex = 0;
 const SLIDE_INTERVAL = 4000;
 
@@ -111,7 +100,6 @@ function renderCarousel() {
     const track = document.getElementById('carousel-track');
     if (!track) return;
     
-    // Safety check if events are empty
     if(events.length === 0) return;
 
     const highlights = events.slice(0, 3); 
@@ -135,7 +123,6 @@ function startCarousel() {
     }, SLIDE_INTERVAL);
 }
 
-// --- Modal Logic (For New Event) ---
 function openModal(modalId) {
     document.getElementById(modalId).style.display = 'flex';
 }
